@@ -1,0 +1,68 @@
+name: Build and Release APK
+
+# Workflow berjalan otomatis saat ada tag baru bertipe versi (contoh: v1.0.0)
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    name: Build APK & Buat Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout kode
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: 8.5
+
+      - name: Decode keystore dari secret
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > release-key.jks
+
+      - name: Build APK Release (signed)
+        env:
+          KEYSTORE_PATH: ../release-key.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: gradle assembleRelease --no-daemon
+
+      - name: Hapus keystore setelah build
+        if: always()
+        run: rm -f release-key.jks
+
+      - name: Cari file APK hasil build
+        id: find_apk
+        run: |
+          APK_PATH=$(find app/build/outputs/apk/release -name "*.apk" | head -n 1)
+          echo "apk_path=$APK_PATH" >> "$GITHUB_OUTPUT"
+
+      - name: Ganti nama APK sesuai tag
+        run: |
+          mkdir -p release-output
+          cp "${{ steps.find_apk.outputs.apk_path }}" "release-output/PasswordGenerator-${{ github.ref_name }}.apk"
+
+      - name: Buat GitHub Release dan unggah APK
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: "Password Generator ${{ github.ref_name }}"
+          body: |
+            Rilis otomatis dari GitHub Actions.
+            Tag: ${{ github.ref_name }}
+          files: release-output/PasswordGenerator-${{ github.ref_name }}.apk

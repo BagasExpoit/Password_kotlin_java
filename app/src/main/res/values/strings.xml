@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Password Generator</string>
+    <string name="tagline">Buat kata sandi kuat dengan mudah</string>
+
+    <string name="menu_settings">Pengaturan</string>
+    <string name="menu_about">Tentang &amp; Kontak</string>
+
+    <string name="label_password_length">Panjang Password</string>
+    <string name="label_uppercase">Huruf Besar (A-Z)</string>
+    <string name="label_lowercase">Huruf Kecil (a-z)</string>
+    <string name="label_numbers">Angka (0-9)</string>
+    <string name="label_symbols">Simbol (!@#$%)</string>
+    <string name="btn_generate">Buat Password</string>
+    <string name="btn_copy">Salin</string>
+    <string name="copied_toast">Password disalin ke clipboard</string>
+    <string name="toggle_show_password">Lihat/sembunyikan password</string>
+
+    <string name="settings_theme_title">Tema Aplikasi</string>
+    <string name="settings_theme_light">Terang (Cream &amp; Gold)</string>
+    <string name="settings_theme_dark">Gelap</string>
+    <string name="settings_theme_system">Ikuti Sistem</string>
+    <string name="settings_animation_title">Animasi Saat Membuka Aplikasi</string>
+
+    <string name="about_title">Tentang Aplikasi</string>
+    <string name="about_description">Password Generator adalah aplikasi untuk membuat kata sandi yang aman dan acak secara instan.</string>
+    <string name="developer_contact_title">Kontak Pengembang</string>
+    <string name="developer_name">Nama Pengembang</string>
+    <string name="developer_email">dev@example.com</string>
+    <string name="developer_github">github.com/username</string>
+</resources>

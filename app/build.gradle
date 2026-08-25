@@ -1,0 +1,77 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+// Muat konfigurasi keystore dari keystore.properties (lokal) jika ada,
+// atau dari environment variable (dipakai oleh GitHub Actions).
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+def hasKeystoreFile = keystorePropertiesFile.exists()
+if (hasKeystoreFile) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+def envOrProp = { String propKey, String envKey ->
+    if (hasKeystoreFile && keystoreProperties[propKey]) return keystoreProperties[propKey]
+    return System.getenv(envKey)
+}
+
+android {
+    namespace 'com.dev.passwordgenerator'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.dev.passwordgenerator"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "1.0.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        release {
+            def ksPath = envOrProp("storeFile", "KEYSTORE_PATH")
+            if (ksPath != null) {
+                storeFile file(ksPath)
+                storePassword envOrProp("storePassword", "KEYSTORE_PASSWORD")
+                keyAlias envOrProp("keyAlias", "KEY_ALIAS")
+                keyPassword envOrProp("keyPassword", "KEY_PASSWORD")
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // Terapkan signing hanya jika konfigurasi tersedia (lokal atau CI)
+            if (envOrProp("storeFile", "KEYSTORE_PATH") != null) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.preference:preference-ktx:1.2.1'
+    implementation 'androidx.cardview:cardview:1.0.0'
+}

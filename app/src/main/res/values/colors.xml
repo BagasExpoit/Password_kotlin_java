@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Palet Cream & Gold Walet -->
+    <color name="cream_background">#FFF8ED</color>
+    <color name="cream_surface">#FDF1DD</color>
+    <color name="gold_walet">#C9A227</color>
+    <color name="gold_walet_dark">#A8811C</color>
+    <color name="gold_walet_light">#E4C766</color>
+    <color name="text_primary">#3B2F14</color>
+    <color name="text_secondary">#7A6A45</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="divider">#E9DCB8</color>
+
+    <!-- Tema Gelap -->
+    <color name="dark_background">#1E1A10</color>
+    <color name="dark_surface">#2A2416</color>
+    <color name="dark_text_primary">#F5E9C8</color>
+</resources>
